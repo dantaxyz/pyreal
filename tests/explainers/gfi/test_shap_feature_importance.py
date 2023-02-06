@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from shap import LinearExplainer
 
 from pyreal.explainers import GlobalFeatureImportance, ShapFeatureImportance
@@ -162,3 +163,12 @@ def helper_shap_produce_classification_no_transforms_with_size(explainer, model)
     importances = explainer.produce()
     assert importances.shape == (1, model["x"].shape[1])
     assert abs(importances["C"][0]) > 0.0001
+
+
+def test_shap_fit_produce_with_booleans(dummy_model):
+    x_data = [[0, 1, True],
+              [1, 0, True],
+              [0, 0, False]]
+    x = pd.DataFrame(x_data)
+    shap = ShapFeatureImportance(dummy_model, x_train_orig=x, shap_type="kernel")
+    shap.fit()

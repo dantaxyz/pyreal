@@ -117,3 +117,14 @@ def time_series_data():
     for v in range(n_var):
         nested[f"var_{v}"] = [pd.Series(np3d[i, v, :]) for i in range(n_inst)]
     return {"np3d": np3d, "np2d": np2d, "df3d": df3d, "df2d": df2d, "nested": nested}
+
+
+class DummyModel:
+    def predict(self, x):
+        return np.ones(x.shape[0])
+
+
+@pytest.fixture()
+def dummy_model():
+    # basic functionless model
+    return DummyModel()
