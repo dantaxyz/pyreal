@@ -120,6 +120,9 @@ def time_series_data():
 
 
 class DummyModel:
+    def __call__(self, x):
+        return self.predict(x)
+
     def predict(self, x):
         return np.ones(x.shape[0])
 

@@ -4,6 +4,7 @@ from shap import LinearExplainer
 
 from pyreal.explainers import LocalFeatureContribution, ShapFeatureContribution
 from pyreal.transformers import Mappings, MappingsOneHotEncoder
+from sklearn.linear_model import LinearRegression
 
 
 def test_fit_shap(all_models):
@@ -238,8 +239,12 @@ def test_shap_fit_produce_with_booleans(dummy_model):
     }
     mappings_ctoh = Mappings.generate_mappings(categorical_to_one_hot=categorical_to_one_hot)
     mappings_ohe = MappingsOneHotEncoder(mappings_ctoh)
-    x = pd.DataFrame([["a", "b", 10, "f"], ["b", "c", 11, "d"]], columns=["A", "B", "C", "D"])
+    x = pd.DataFrame([["a", "b", 10], ["b", "c", 11]], columns=["A", "B", "C"])
 
-    shap = ShapFeatureContribution(dummy_model, x_train_orig=x, transformers=mappings_ohe, shap_type="kernel")
+    linear_model = LinearRegression()
+    linear_model.fit(mappings_ohe.transform(x), [0, 1])
+
+    shap = ShapFeatureContribution(
+        dummy_model, x_train_orig=x, transformers=[mappings_ohe], shap_type="kernel")
     shap.fit()
-    print(shap.produce(pd.Series(["a", "b", 10, "f"])))
+    print(shap.produce(pd.Series(["a", "b", 10], index=["A", "B", "C"])))
