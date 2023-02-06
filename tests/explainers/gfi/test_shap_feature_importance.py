@@ -172,3 +172,4 @@ def test_shap_fit_produce_with_booleans(dummy_model):
     x = pd.DataFrame(x_data)
     shap = ShapFeatureImportance(dummy_model, x_train_orig=x, shap_type="kernel")
     shap.fit()
+    shap.produce()

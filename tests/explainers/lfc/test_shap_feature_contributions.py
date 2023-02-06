@@ -3,6 +3,7 @@ import pandas as pd
 from shap import LinearExplainer
 
 from pyreal.explainers import LocalFeatureContribution, ShapFeatureContribution
+from pyreal.transformers import Mappings, MappingsOneHotEncoder
 
 
 def test_fit_shap(all_models):
@@ -228,3 +229,17 @@ def helper_produce_shap_classification_no_transforms_with_size(explainer):
     contributions = explainer.produce(x_multi_dim)[0]
     print(contributions)
     assert x_multi_dim.shape == contributions.shape
+
+
+def test_shap_fit_produce_with_booleans(dummy_model):
+    categorical_to_one_hot = {
+        "A": {"A_a": "a", "A_b": "b"},
+        "B": {"B_a": "a", "B_b": "b", "B_c": "c"},
+    }
+    mappings_ctoh = Mappings.generate_mappings(categorical_to_one_hot=categorical_to_one_hot)
+    mappings_ohe = MappingsOneHotEncoder(mappings_ctoh)
+    x = pd.DataFrame([["a", "b", 10, "f"], ["b", "c", 11, "d"]], columns=["A", "B", "C", "D"])
+
+    shap = ShapFeatureContribution(dummy_model, x_train_orig=x, transformers=mappings_ohe, shap_type="kernel")
+    shap.fit()
+    print(shap.produce(pd.Series(["a", "b", 10, "f"])))
