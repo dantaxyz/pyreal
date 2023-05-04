@@ -411,6 +411,8 @@ class RealApp:
                 LFC algorithm to use
             shap_type (string):
                 If algorithm is "shap", type of shap to use
+            training_size (int):
+                Number of rows to use when fitting the explainer.
 
         Returns:
             A fit LocalFeatureContribution explainer
@@ -460,6 +462,8 @@ class RealApp:
                 Training targets to fit on, if not provided during initialization
             algorithm (string):
                 Name of algorithm
+            training_size (int):
+                Number of rows to use when fitting the explainer.
             shap_type (string):
                 If algorithm="shap", type of SHAP explainer to use
             force_refit (Boolean):
